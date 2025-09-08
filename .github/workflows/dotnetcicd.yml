@@ -1,0 +1,26 @@
+steps:
+- name: Checkout repository
+  uses: actions/checkout@v4
+
+- name: Setup .NET
+  uses: actions/setup-dotnet@v4
+  with:
+    dotnet-version: '8.0.x'
+
+- name: Restore dependencies
+  run: dotnet restore
+
+- name: Build
+  run: dotnet build --no-restore --configuration Release
+
+- name: Run tests
+  run: dotnet test --no-build
+
+- name: Publish
+  run: dotnet publish --configuration Release --output ${{ env.DOTNET_ROOT }}/publish
+
+- name: Upload artifact for deployment
+  uses: actions/upload-artifact@v4
+  with:
+    name: my-web-app
+    path: ${{ env.DOTNET_ROOT }}/publish
